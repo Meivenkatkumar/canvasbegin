@@ -1,4 +1,4 @@
-var i=0,vel=0,savevel=2;
+var i=0,vel=2,savevel=2;
 var canvas=document.querySelector('canvas');
 var highscore=0;
 if (localStorage.hasOwnProperty("highsco")) {
@@ -23,6 +23,20 @@ constructor(){
 	this.t=0;
 	this.score=0;
 	this.lvl=1;
+    }
+    initialise(){
+    this.x=canvas.width/2;
+    this.r=180;
+    this.y=(canvas.height-this.r )-20;
+    this.vy=10;
+    this.angle=0;
+    this.dangle=Math.PI*0.04;
+    this.p=0;
+    this.q=0;
+    this.s=0;
+    this.t=0;
+    this.score=0;
+    this.lvl=1;   
     }
     build(){
     this.p=this.x + (this.r * Math.cos(this.angle));
@@ -52,6 +66,13 @@ constructor(){
     this.angle=this.angle-this.dangle;
     }
 
+}
+function restart(){
+  for(i=0;i<3;i++)
+  {
+    obss[i].initialise();
+   }
+   duo1.initialise();
 }
 function rotate(event){
 	if(event.keyCode==37)
@@ -169,10 +190,12 @@ class obstacle{
         if(this.rad1<=17)
         {
         	alert("collision");
+            restart();
         }
         if (this.rad2<=17)
         {
         	alert("collision");
+            restart();
         }
 
     }
@@ -188,7 +211,7 @@ obss[0].vy=2;
 function animate()
 {
 	requestAnimationFrame(animate);
-	c.clearRect(0,0,innerWidth,innerHeight);         
+	c.clearRect(0,0,window.innerWidth,window.innerHeight);         
  	   for(i=0;i<3;i++)
 	   {
 		obss[i].falldown();
@@ -207,10 +230,8 @@ function animate()
 		  }
 		if((obss[0].y >= i*0.33*canvas.height)&&(duo1.score==0))
 		  {
-		 		obss[i].vy=2;
+		 		obss[i].vy=vel;
 		  }
-        if(duo1.score==10)
-            vel=2;
 		if(duo1.score>=10)
           {
 		 	obss[i].vy=vel;
