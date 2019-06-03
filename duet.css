@@ -1,15 +1,71 @@
 #gamearea{
-	margin-left: 33.3333%;
-	margin-right: 33.3333%;
-	text-align: center;
-	width:33.3333%;
+	width:100%;
 	height: 100%;
 	display: none;
+	text-align: center;
+	padding: auto;
+	text-decoration-color: white;
+}
+#scoreboard{
+	float: left;
+	height: 100%;
+}
+#play{
+	float: left;
+	height: 100%;
+	text-align: center;
+	margin-left: 20%;
 }
 canvas{
-	border:10px solid red;
-	margin-left: 33.3333%
 }
 #cover{
 	display:block;
+	border-radius: 10px;
+	background-color: rgba(179,179,179,0.4);
+	width: 500px;
+	padding-top:25px;
+	text-align: center;
+	margin: auto;
+	margin-top: 5%;
+	font-weight: bold;
+	font-size: 30px;
+	height: 800px;
+}
+.Moments{
+	text-align: center;
+	background-image: url(1.jpg);
+	width: 100%;
+}
+input{
+	width:80%;
+    border-radius: 5px;
+    border:3 px solid black;
+    height:30px;
+}
+#solo,#dual{
+	padding: auto;
+	font-size: 15px;
+	width: 125px;
+	height:30px;
+	border:2px solid black;
+	border-radius: 10px;
+	border: 2px solid black;
+	background-color: #ffffff;
+}
+#solo:hover,#dual:hover{
+   background-color:rgb(89,89,89);
+   color: rgb(255,255,255);
+}
+table,th,td{
+	border: 1px solid black;
+	border-color: rgb(255,255,255);
+	color: rgb(255,255,255);
+}
+th{
+	height: 60px;
+	column-width: 200px;
+}
+td{
+	text-align: center;
+	height:40px;
 }

@@ -59,13 +59,13 @@ if (localStorage.hasOwnProperty("highsco")) {
 }
 else
     localStorage.setItem("highsco",highscore);
-canvas.width=800;
-canvas.height=1500;
+canvas.width=500;
+canvas.height=900;
 var c = canvas.getContext('2d');
 class duo{
 constructor(){
     this.x=canvas.width/2;
-    this.r=180;
+    this.r=100;
     this.y=(canvas.height-this.r )-20;
     this.vy=10;
     this.angle=0;
@@ -80,7 +80,7 @@ constructor(){
     }
     initialise(){
     this.x=canvas.width/2;
-    this.r=180;
+    this.r=100;
     this.y=(canvas.height-this.r )-20;
     this.vy=10;
     this.angle=0;
@@ -90,23 +90,25 @@ constructor(){
     this.s=0;
     this.t=0;
     this.score=0;
+    vel=2;
+    savevel=2;
     this.lvl=1;   
     }
     build(){
-    if((this.score%50==0)&&(this.score>0)&&(this.r>3))
+    if((this.score%200==0)&&(this.score>0)&&(this.r>3))
     {
         this.r=this.r-3;
     }
-    if(this.score%50==30)
+    if(this.score%200==30)
     {
-        this.r=180;
+        this.r=100;
     }
     this.p=this.x + (this.r * Math.cos(this.angle));
     this.q=this.y + (this.r * Math.sin(this.angle));
     this.s=this.x - (this.r * Math.cos(this.angle));
     this.t=this.y - (this.r * Math.sin(this.angle));
     c.beginPath();
-    c.lineWidth=5;
+    c.lineWidth=1;
     c.strokeStyle='rgb(0,255,0)';
     c.arc(this.x,this.y,this.r,0,2*Math.PI,true);
     c.stroke();
@@ -148,7 +150,7 @@ function rotate(event){
         if(duo1.r<10)
             duo1.x-=10;
         else
-            duo1.x=400;
+            duo1.x=250;
     }
     else if(event.keyCode==39)       
     {
@@ -158,7 +160,7 @@ function rotate(event){
             duo1.x+=10;
         }
         else
-            duo1.x=400;
+            duo1.x=250;
     }
     else if(event.keyCode==32)
         { 
@@ -266,14 +268,12 @@ class sprite{
         this.rad2=Math.sqrt((this.disx2*this.disx2)+(this.disy2*this.disy2));
         if(this.rad1<=17)
         {
-            alert("powerup");
             this.y=1510;
             duo1.dangle=Math.PI*0.06;
             count=1;
         }
         if (this.rad2<=17)
         {
-            alert("powerup");
             this.y=1510;
             duo1.dangle=Math.PI*0.06;
             count=1;
@@ -282,7 +282,7 @@ class sprite{
     }
     meter(){
         c.fillStyle='rgb(0,255,0)';
-        c.fillRect(0,0,800*(duo1.score%210)*0.005,10);
+        c.fillRect(0,0,500*(duo1.score%200)*0.005,10);
         c.fillStyle='rgb(255,0,0)';
     }
 
@@ -290,11 +290,11 @@ class sprite{
 class obstacle{
     constructor(){
         this.vy=0;
-        this.wid= (360)-25;
+        this.wid= (200)-25;
         this.x=(Math.random() * canvas.width)-this.wid;
         if(this.x<0)
             this.x=-this.x;
-        if(this.x>(duo1.x-duo1.r-40) && this.x<duo1.x)
+        if(this.x>(250-duo1.r-40) && this.x<250)
             this.wid=this.wid*0.6;
         this.y=0;
         this.disx1;
@@ -305,14 +305,14 @@ class obstacle{
         this.rad2;
     }
     initialise(){
+        this.wid=(200)-25;
         this.x=(Math.random() * canvas.width)-this.wid;
         if(this.x<0)
             this.x=-this.x;
-        if((this.x>360-duo1.r) && this.x<400)
+        if((this.x>150) && this.x<250)
             this.wid=this.wid*0.6;
         this.y=0;
         this.vy=0;
-        this.wid=(duo1.r*2)-25;
     }
     build(){
         if(this.y>0)
@@ -378,12 +378,12 @@ class obstacle{
         this.rad2=Math.sqrt((this.disx2*this.disx2)+(this.disy2*this.disy2));
         if(this.rad1<=17)
         {
-            alert("collision");
+            alert("GAME OVER");
             restart();
         }
         if (this.rad2<=17)
         {
-            alert("collision");
+            alert("GAME OVER");
             restart();
         }
 
@@ -416,8 +416,8 @@ function animate()
 		      duo1.score+=10;
               for(j=0;j<=b.length;++j)
                  updatetable();
-              duo1.lvl=duo1.lvl+Math.floor(duo1.score/300);  //level increase for every 300points
-              vel=2+duo1.lvl;                                //speed increases as level increases
+              duo1.lvl=duo1.lvl+(0.1*Math.floor(duo1.score/250));  //level increase for every 300points
+              vel=1+duo1.lvl;                                //speed increases as level increases
               savevel=vel;
               if(duo1.score>highscore)
               {
@@ -435,7 +435,7 @@ function animate()
           }
 	    } 
     for(i=0;i<3;i++)
-       if((duo1.score%50==0)&&(obss[i].y>0.16*canvas.height)&&(obss[i].y<0.17*canvas.height)&&(duo1.score>0))
+       if((duo1.score%150==0)&&(obss[i].y>0.16*canvas.height)&&(obss[i].y<0.17*canvas.height)&&(duo1.score>0))
           powerup.initialise();
     if(powerup.y<1510)
     {
@@ -445,16 +445,23 @@ function animate()
 	window.addEventListener("keydown",rotate,true);
 	duo1.build();
     powerup.meter();
-    if(count<1000*50*5)
+    if(count<1000*50*5)         //faster rotation for 5 secs
         count++;
-    if(count>=1000*50*5)
+    if(count>=1000*50*5)        //retains the normal rotation speed
         duo1.dangle=Math.PI*0.04;
+    var gradient = c.createLinearGradient(0, 0, 170, 0);
+    gradient.addColorStop("0", "blue");
+    gradient.addColorStop("0.5" ,"magenta");
+    gradient.addColorStop("1.0", "red");
+    c.strokeStyle = gradient;
+    c.lineWidth = 10;
+    c.strokeRect(2, 2,498, 898);
 }
 setInterval(animate,1000/50);
 }
 /*dual mode*/
 function playdual(){
-var i=0,vel=2,savevel=2,count=25000;
+var i=0,vel=2,savevel=2,count=25000,t=20;
 var canvas=document.querySelector('canvas');
 var highscore=0;
 if (localStorage.hasOwnProperty("highsco")) {
@@ -462,8 +469,8 @@ if (localStorage.hasOwnProperty("highsco")) {
 }
 else
     localStorage.setItem("highsco",highscore);
-canvas.width=800;
-canvas.height=1500;
+canvas.width=500;
+canvas.height=900;
 var coin=new Image();
 coin.src="1.png";
 var c = canvas.getContext('2d');
@@ -482,13 +489,15 @@ function createtable() {
    cell2.innerHTML = 0;
 }
 function updatetable(){
-    document.getElementById('SB').rows[1].cells[1].innerHTML=duo1.score1;
-    document.getElementById('SB').rows[2].cells[1].innerHTML=duo1.score2;
+    if(duo1.turn==0)
+    document.getElementById('SB').rows[1].cells[1].innerHTML=duo1.score;
+    if(duo1.turn==1)
+    document.getElementById('SB').rows[2].cells[1].innerHTML=duo1.score;
 }
 class duo{
 constructor(){
-    this.x=canvas.width/2;
-    this.r=180;
+    this.x=250;
+    this.r=100;
     this.y=(canvas.height-this.r )-20;
     this.vy=10;
     this.angle=0;
@@ -505,7 +514,7 @@ constructor(){
     }
     initialise(){
     this.x=canvas.width/2;
-    this.r=180;
+    this.r=100;
     this.y=(canvas.height-this.r )-20;
     this.vy=10;
     this.angle=0;
@@ -516,14 +525,24 @@ constructor(){
     this.t=0;
     this.score=0;
     this.lvl=1;   
+    vel=2;
+    savevel=2;
     }
     build(){
+        if((this.score%200==0)&&(this.score>0)&&(this.r>3))
+    {
+        this.r=this.r-3;
+    }
+    if(this.score%200==30)
+    {
+        this.r=100;
+    }
     this.p=this.x + (this.r * Math.cos(this.angle));
     this.q=this.y + (this.r * Math.sin(this.angle));
     this.s=this.x - (this.r * Math.cos(this.angle));
     this.t=this.y - (this.r * Math.sin(this.angle));
     c.beginPath();
-    c.lineWidth=5;
+    c.lineWidth=1;
     c.strokeStyle='rgb(0,255,0)';
     c.arc(this.x,this.y,this.r,0,2*Math.PI,true);
     c.stroke();
@@ -628,19 +647,22 @@ class sprite{
         this.rad2=Math.sqrt((this.disx2*this.disx2)+(this.disy2*this.disy2));
         if(this.rad1<=17)
         {
-            alert("powerup");
             this.y=1510;
             duo1.dangle=Math.PI*0.06;
             count=1;
         }
         if (this.rad2<=17)
         {
-            alert("powerup");
             this.y=1510;
             duo1.dangle=Math.PI*0.06;
             count=1;
         }
 
+    }
+    meter(){
+        c.fillStyle='rgb(0,255,0)';
+        c.fillRect(0,0,500*(duo1.score%200)*0.005,10);
+        c.fillStyle='rgb(255,0,0)';
     }
 
 }
@@ -658,17 +680,41 @@ function restart(){
     else if(duo1.turn==1)
     {  
         powerup.y=1510;
-        if(duo1.score1>duo1.score2)
-            alert("PLAYER1 WON");
-        if(duo1.score1<duo1.score2)
-            alert("PLAYER 2 WON");
+        exit1();
     }   
 }
+function exit1(){
+    c.clearRect(0,0,window.innerWidth,window.innerHeight);
+    c.font = "30px Comic Sans MS";
+    c.fillStyle = "magenta";
+    c.textAlign = "center";
+    if(duo1.score1>duo1.score2)
+    c.fillText("PLAYER1 WON", canvas.width/2, canvas.height/2);
+    else if(duo1.score1<duo1.score2)
+    c.fillText("PLAYER2 WON", canvas.width/2, canvas.height/2);
+    else
+    c.fillText("DRAW", canvas.width/2, canvas.height/2);    
+    clearInterval(stop);
+    }
 function rotate(event){
     if(event.keyCode==37)
+    {
         duo1.awrotate();
-    else if(event.keyCode==39)       
+        if(duo1.r<10)
+            duo1.x-=10;
+        else
+            duo1.x=250;
+    }
+    else if(event.keyCode==39) 
+    {     
         duo1.cwrotate();
+         if(duo1.r<10)
+        {
+            duo1.x+=10;
+        }
+        else
+            duo1.x=250;
+    }
     else if(event.keyCode==32)
         { 
 
@@ -698,11 +744,11 @@ function rotate(event){
 class obstacle{
     constructor(){
         this.vy=0;
-        this.wid= (duo1.r*2)-25;
+        this.wid= (200)-25;
         this.x=(Math.random() * canvas.width)-this.wid;
         if(this.x<0)
             this.x=-this.x;
-        if(this.x>duo1.x-duo1.r && this.x<duo1.x)
+        if(this.x>150 && this.x<250)
             this.wid=this.wid*0.6;
         this.y=-10;
         this.disx1;
@@ -713,14 +759,14 @@ class obstacle{
         this.rad2;
     }
     initialise(){
+        this.wid=(200)-25;
         this.x=(Math.random() * canvas.width)-this.wid;
         if(this.x<0)
             this.x=-this.x;
-        if(this.x>(duo1.x-duo1.r-40) && this.x<duo1.x)
+        if((this.x>150) && this.x<250)
             this.wid=this.wid*0.6;
         this.y=0;
         this.vy=0;
-        this.wid=(duo1.r*2)-25;
     }
     build(){
         if(this.y>0)
@@ -786,7 +832,7 @@ class obstacle{
         this.rad2=Math.sqrt((this.disx2*this.disx2)+(this.disy2*this.disy2));
         if(this.rad1<=17)
         {
-            alert("collision");
+            alert("GAME OVER");
             if(duo1.turn==0)
                 duo1.score1=duo1.score;
             else if(duo1.turn==1)
@@ -795,7 +841,7 @@ class obstacle{
         }
         if (this.rad2<=17)
         {
-            alert("collision");
+            alert("GAME OVER");
             if(duo1.turn==0)
                 duo1.score1=duo1.score;
             else if(duo1.turn==1)
@@ -816,7 +862,6 @@ obss[0].vy=2;
 createtable();
 function animate()
 {
-    requestAnimationFrame(animate);
     c.clearRect(0,0,window.innerWidth,window.innerHeight);         
        for(i=0;i<3;i++)
        {
@@ -826,8 +871,8 @@ function animate()
           {
               obss[i].initialise();
               duo1.score+=10;
-              duo1.lvl=duo1.lvl+Math.floor(duo1.score/300);
-              vel=2+duo1.lvl;
+              duo1.lvl=duo1.lvl+(0.1*Math.floor(duo1.score/300));
+              vel=1+duo1.lvl;
               updatetable();
               if(duo1.score>highscore)
               {
@@ -845,7 +890,7 @@ function animate()
           }
         } 
     for(i=0;i<3;i++)
-       if((duo1.score%50==0)&&(obss[i].y>0.16*canvas.height)&&(obss[i].y<0.17*canvas.height)&&(duo1.score>0))
+       if((duo1.score%150==0)&&(obss[i].y>0.16*canvas.height)&&(obss[i].y<0.17*canvas.height)&&(duo1.score>0))
           powerup.initialise();
     if(powerup.y<1510)
     {
@@ -854,10 +899,18 @@ function animate()
     }
     window.addEventListener("keydown",rotate,true);
     duo1.build();
+    powerup.meter();
     if(count<1000*50*5)
         count++;
     if(count>=1000*50*5)
         duo1.dangle=Math.PI*0.04;
+    var gradient = c.createLinearGradient(0, 0, 170, 0);
+    gradient.addColorStop("0", "blue");
+    gradient.addColorStop("0.5" ,"magenta");
+    gradient.addColorStop("1.0", "red");
+    c.strokeStyle = gradient;
+    c.lineWidth = 10;
+    c.strokeRect(2, 2,498, 898);
 }
-animate();
+var stop=setInterval(animate,t);
 }
